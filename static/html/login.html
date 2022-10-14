@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" >
+        <title>租房网 - 用户登录</title>
+        <link rel="stylesheet" href="/static/css/style.css">
+        <link rel="stylesheet" href="/static/css/head.css">
+    </head>
+    <body>
+        <div id="header" class="wrap">
+			<div id="logo">
+				<img src="/static/images/logo.png" width="160" height="40">
+			</div>
+			<div id="headbar">
+				<a href="login.html">用户登录</a>
+				<a href="register.html">快速注册</a>
+				<div class="pub">
+					<a href="publish.html">发布房源</a>
+				</div>
+			</div>
+		</div>
+        <div id="regLogin" class="wrap">
+            <div class="dialog">
+                <div class="box">
+                    <h4>用户登录</h4>
+                    <form id="loginForm" action="" method="post">
+                        <div class="infos">
+                            <table class="field">
+                                <tr>
+                                    <td class="field"><label for="username">用 户 名：</label></td>
+                                    <td>
+                                        <input id="username" type="text" class="text" name="username">
+                                        <span id="uerror"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="field"><label for="password">密 码：</label></td>
+                                    <td>
+                                        <input id="password" type="password" class="text" name="password">
+                                        <span id="perror"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="field"><label for="captcha">验 证 码：</label></td>
+                                    <td>
+                                        <input id="captcha" type="text" class="text" name="captcha">
+                                        <img id="captchaImage" src="/captcha/" width="80" height="30">
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="buttons">
+                                <input type="submit" value="立即登录">
+                                <input id="regBtn" type="button" value="快速注册">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div id="footer" class="wrap">
+            <dl>
+                <dt>&copy; 北京千锋互联科技有限公司 版权所有</dt>
+				<dd>京ICP备12003911号-3 京公网安备11010802011455号</dd>
+				<dd>关于千锋 · 联系我们 · 意见反馈 · 帮助中心</dd>
+            </dl>
+        </div>
+        <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+        <script>
+            $(() => {
+                $('#captchaImage').on('click', (evt) => {
+                    $(evt.target).attr('src', '/captcha/?' + Math.random())
+                })
+            })
+        </script>
+    </body>
+</html>
+
+

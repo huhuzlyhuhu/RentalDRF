@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>租房网 - 首页</title>
+		<link rel="stylesheet" href="/static/css/style.css">
+        <link rel="stylesheet" href="/static/css/head.css">
+		<style>
+			[v-cloak] {
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+        <div id="header" class="wrap">
+			<div id="logo">
+				<img src="/static/images/logo.png" width="160" height="40">
+			</div>
+			<div id="headbar">
+				<a href="login.html">用户登录</a>
+				<a href="register.html">快速注册</a>
+				<div class="pub">
+					<a href="publish.html">发布房源</a>
+				</div>
+			</div>
+		</div>
+        <div id="navbar" class="wrap">
+			<div id="app2" class="search clearfix">
+				<div class="fl">
+					<ul>
+						<li class="bold">房屋信息</li>
+						<li>标题：
+							<input type="text" class="text">
+							<label class="ui-blue">
+							<input type="submit" name="search" value="搜索房屋">
+						</label>
+						</li>
+					</ul>
+				</div>
+				<div class="fl">
+					<ul>
+						<li class="first">价格</li>
+						<li>
+							<select v-model="price">
+								<option value="0-999999999">不限</option>
+								<option value="0-1000">1000元以下</option>
+								<option value="1000-2000">1000元-2000元</option>
+								<option value="2000-3000">2000元—3000元</option>
+								<option value="3000-5000">3000元—5000元</option>
+								<option value="5000-10000">5000元—10000元</option>
+								<option value="10000-20000">10000元—20000元</option>
+								<option value="20000-50000">20000元—50000元</option>
+								<option value="50000-999999999">50000元以上</option>
+							</select>
+						</li>
+					</ul>
+				</div>
+				<div class="fl">
+					<ul>
+						<li class="first">房屋位置</li>
+						<li>
+							省
+							<select v-model.number="provId" @change="selectProv">
+								<option value="0">请选择</option>
+								<option v-for="prov in provinces" :value="prov.distid">{{ prov.name }}</option>
+							</select>
+							市
+							<select v-model.number="cityId" @change="selectCity">
+								<option value="0">请选择</option>
+								<option v-for="city in cities" :value="city.distid">{{ city.name }}</option>
+							</select>
+							区
+							<select v-model.number="countyId">
+								<option value="0">请选择</option>
+								<option v-for="county in counties" :value="county.distid">{{ county.name }}</option>
+							</select>
+						</li>
+					</ul>
+				</div>
+				<div class="fl">
+					<ul>
+						<li class="first">房型</li>
+						<li>
+							<select v-model.number="housetype">
+								<option value="0">不限</option>
+								<option v-for="type in housetypes" :value="type.typeid">{{ type.name }}</option>
+							</select>
+						</li>
+					</ul>
+				</div>
+				<div class="fl">
+					<ul>
+						<li class="first">面积</li>
+						<li>
+							<select v-model="area">
+								<option value="0-99999999">不限</option>
+								<option value="0-50">50平米以下</option>
+								<option value="50-100">50-100平米</option>
+								<option value="100-200">100-200平米</option>
+								<option value="200-99999999">200平米以上</option>
+							</select>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div id="app1" v-cloak class="main wrap">
+			<table class="house-list">
+				<tr v-for="house in houseinfos">
+					<td class="house-thumb">
+						<div>
+							<img :src="house.mainphoto" width="160" height="120" alt="">
+							<span class="count">图</span>
+						</div>
+					</td>
+					<td>
+						<dl>
+							<dt>
+								<a href="">{{ house.title }}</a>
+							</dt>
+							<dd>
+								{{ house.district.name }}&nbsp;{{ house.street }}&nbsp;
+								{{ house.area }}平米&nbsp;{{ house.floor }}层/{{ house.totalfloor }}层 <br>
+							</dd>
+							<dd>
+								<span v-for="tag in house.tags" class="house-tag">{{ tag.content }}</span>
+							</dd>
+						</dl>
+					</td>
+					<td class="house-type">{{ house.type.name }}</td>
+					<td class="house-price"><span>{{ house.price }}</span>{{ house.priceunit }}</td>
+					<td><button class="house-pay" @click="gotoPaymentPage(house.houseid)">付款预定</button></td>
+				</tr>
+			</table>
+			<div class="pager">
+				<ul>
+					<li class="current">
+						<a href="">首页</a>
+					</li>
+					<li>
+						<a href="">上一页</a></li>
+					<li>
+						<a href="">下一页</a>
+					</li>
+					<li>
+						<a href="">末页</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+        <div id="footer" class="wrap">
+			<dl>
+				<dt>&copy; 北京千锋互联科技有限公司 版权所有</dt>
+				<dd>京ICP备12003911号-3 京公网安备11010802011455号</dd>
+				<dd>关于千锋 · 联系我们 · 意见反馈 · 帮助中心</dd>
+			</dl>
+		</div>
+		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+		<script>
+			const app1 = new Vue({
+				el: '#app1',
+				data: {
+					houseinfos: [],
+				},
+				created() {
+					fetch('/api/houseinfos/')
+						.then(resp => resp.json())
+						.then(json => {
+							this.houseinfos = json.results
+						})
+				},
+				methods: {
+					gotoPaymentPage(houseId) {
+						let url = `/api/payments/${houseId}/`
+						fetch(url, {
+							headers: {
+								'token': localStorage.token
+							}
+						})
+							.then(resp => resp.json)
+							.then(json => {
+								location.href = json.url
+							})
+					}
+				}
+			})
+		</script>
+		<script>
+			const app2 = new Vue({
+				el: '#app2',
+				data: {
+					provinces: [],
+					cities: [],
+					counties: [],
+					housetypes: [],
+					title: '',
+					price: '0-999999999',
+					provId: 0,
+					cityId: 0,
+					countyId: 0,
+					housetype: 0,
+					area: '0-99999999'
+				},
+				created() {
+					fetch('/api/districts/')
+						.then(resp => resp.json())
+						.then(json => this.provinces = json.results)
+					fetch('/api/housetypes/')
+						.then(resp => resp.json())
+						.then(json => this.housetypes = json)
+				},
+				methods: {
+					selectProv() {
+						this.cities = []
+						this.cityId = 0
+						this.counties = []
+						this.countyId = 0
+						fetch('/api/districts/' + this.provId)
+							.then(resp => resp.json())
+							.then(json => this.cities = json.cities)
+					},
+					selectCity() {
+						this.counties = []
+						this.countyId = 0
+						fetch('/api/districts/' + this.cityId)
+							.then(resp => resp.json())
+							.then(json => this.counties = json.cities)
+					}
+				}
+			})
+		</script>
+	</body>
+</html>
